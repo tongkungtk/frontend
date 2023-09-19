@@ -15,7 +15,7 @@
         required
         outlined
       ></v-text-field>
-  
+
       <v-text-field
         v-model="password"
         :rules="passwordRules"
