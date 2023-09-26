@@ -1,25 +1,21 @@
 <template>
-    <v-container>
-    <v-row>
+  <v-container>
   
-      <v-col cols="12" > 
-      
-   <LoginForm/>
-  </v-col>
-   </v-row>
+  <LoginForm/>
+  
   </v-container>
-
 </template>
-  
-  <script>
-  import LoginForm from'../components/Login.vue'
-  export default {
-      components:{
-          LoginForm
-      }
-  }
-  </script>
-  
-  <style>
-  
-  </style>
+
+<script>
+import LoginForm from '../components/Login.vue'
+export default {
+ components: {
+    LoginForm
+    
+ }
+}
+</script>
+
+<style>
+
+</style>

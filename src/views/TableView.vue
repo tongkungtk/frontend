@@ -2,7 +2,8 @@
   <v-container>
     <v-row>
         <v-col cols="12">
-            <Table/>
+         <Table/>
+         
         </v-col>
     </v-row>
   </v-container>
@@ -10,9 +11,9 @@
 
 <script>
 export default {
-  components: {
-    Table: () => import('../components/Table.vue')
-  }
+    components: {
+        Table: () => import('../components/Table.vue')
+    }
 }
 </script>
 
