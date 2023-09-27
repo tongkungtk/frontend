@@ -24,7 +24,7 @@
               >
                 เพิ่มข้อมูล
               </v-btn>
-  
+
         </v-toolbar>
       </template>
       <template v-slot:[`item.role`]= "{ item }">
@@ -59,7 +59,7 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-  
+
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -112,7 +112,7 @@
                   </v-row>
                 </v-container>
               </v-card-text>
-  
+
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -145,170 +145,170 @@
           </v-dialog>
   </div>
   </template>
-  
-  <script>
-  export default {
-    data: () => ({
-      firstname: '',
-      lastname: '',
-      salary: '',
-      roles: '',
-      dialogCreate: false,
-      dialogDelete: false,
-      headers: [
-        {
-          text: 'ไอดี',
-          align: 'start',
-          sortable: false,
-          value: 'id'
-        },
-        { text: 'ชื่อ', value: 'firstName' },
-        { text: 'นามสกุล', value: 'lastName' },
-        { text: 'เงินเดือน', value: 'salary' },
-        { text: 'ตำแหน่ง', value: 'role' },
-        { text: 'จัดการ', value: 'actions', sortable: false }
-      ],
-      employeeItem: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+
+<script>
+export default {
+  data: () => ({
+    firstname: '',
+    lastname: '',
+    salary: '',
+    roles: '',
+    dialogCreate: false,
+    dialogDelete: false,
+    headers: [
+      {
+        text: 'ไอดี',
+        align: 'start',
+        sortable: false,
+        value: 'id'
       },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      },
-      formTitle: '',
-      idEmployee: '',
-      idforDelete: ''
-    }),
-  
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
+      { text: 'ชื่อ', value: 'firstName' },
+      { text: 'นามสกุล', value: 'lastName' },
+      { text: 'เงินเดือน', value: 'salary' },
+      { text: 'ตำแหน่ง', value: 'role' },
+      { text: 'จัดการ', value: 'actions', sortable: false }
+    ],
+    employeeItem: [],
+    editedIndex: -1,
+    editedItem: {
+      name: '',
+      calories: 0,
+      fat: 0,
+      carbs: 0,
+      protein: 0
+    },
+    defaultItem: {
+      name: '',
+      calories: 0,
+      fat: 0,
+      carbs: 0,
+      protein: 0
+    },
+    formTitle: '',
+    idEmployee: '',
+    idforDelete: ''
+  }),
+
+  watch: {
+    dialog (val) {
+      val || this.close()
+    },
+    dialogDelete (val) {
+      val || this.closeDelete()
+    }
+  },
+
+  created () {
+    this.initialize()
+  },
+
+  methods: {
+    async initialize () {
+      this.employeeItem = []
+      try {
+        const data = await this.axios.get('http://localhost:9000/employee')
+        console.log('data employee ====>', data)
+        this.employeeItem = data.data
+      } catch (error) {
+
       }
     },
-  
-    created () {
-      this.initialize()
+    openDialog (Action, item) {
+      this.formTitle = ''
+      if (Action === 'add') {
+        this.dialogCreate = true
+        this.formTitle = 'เพิ่มข้อมูล'
+        this.editedItem = item
+      } else {
+        this.formTitle = 'แก้ไขข้อมูล'
+        this.dialogCreate = true
+        this.firstname = item.firstName
+        this.lastname = item.lastName
+        this.salary = item.salary
+        this.roles = item.role.name
+        this.idEmployee = item.id
+      }
     },
-  
-    methods: {
-      async initialize () {
-        this.employeeItem = []
+
+    editItem (item) {
+      console.log('item select', item)
+      this.editedIndex = this.employeeItem.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    deleteItem (item) {
+      this.idforDelete = item.id
+      this.dialogDelete = true
+    },
+
+    async deleteItemConfirm () {
+      try {
+        const response = await this.axios.delete('http://localhost:9000/employee/' + this.idforDelete)
+        this.initialize()
+      } catch (error) {
+        console.log(error.message)
+      }
+      this.closeDelete()
+    },
+
+    close () {
+      this.dialogCreate = false
+      this.editedItem = []
+      this.editedIndex = -1
+      this.defaultItem = {
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0
+      }
+    },
+
+    closeDelete () {
+      this.dialogDelete = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+
+    async save (action) {
+      const data = {
+        firstName: this.firstname,
+        lastName: this.lastname,
+        salary: this.salary,
+        role: {
+          name: this.roles
+        },
+        skills: [
+          { skill: '' }
+        ]
+      }
+      if (action === 'เพิ่มข้อมูล') {
         try {
-          var data = await this.axios.get('http://localhost:9000/employee')
-          console.log('data employee ====>', data)
-          this.employeeItem = data.data
-        } catch (error) {
-  
-        }
-      },
-      openDialog (Action, item) {
-        this.formTitle = ''
-        if (Action === 'add') {
-          this.dialogCreate = true
-          this.formTitle = 'เพิ่มข้อมูล'
-          this.editedItem = item
-        } else {
-          this.formTitle = 'แก้ไขข้อมูล'
-          this.dialogCreate = true
-          this.firstname = item.firstName
-          this.lastname = item.lastName
-          this.salary = item.salary
-          this.roles = item.role.name
-          this.idEmployee = item.id
-        }
-      },
-  
-      editItem (item) {
-        console.log('item select', item)
-        this.editedIndex = this.employeeItem.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-  
-      deleteItem (item) {
-        this.idforDelete = item.id
-        this.dialogDelete = true
-      },
-  
-      async deleteItemConfirm () {
-        try {
-          var response = await this.axios.delete('http://localhost:9000/employee/' + this.idforDelete)
+          var dataResponse = await this.axios.post('http://localhost:9000/employee', data)
+          console.log('dataResponse ====>', dataResponse)
+          this.close()
           this.initialize()
         } catch (error) {
           console.log(error.message)
         }
-        this.closeDelete()
-      },
-  
-      close () {
-        this.dialogCreate = false
-        this.editedItem = []
-        this.editedIndex = -1
-        this.defaultItem = {
-          name: '',
-          calories: 0,
-          fat: 0,
-          carbs: 0,
-          protein: 0
-        }
-      },
-  
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-  
-      async save (action) {
-        var data = {
-          firstName: this.firstname,
-          lastName: this.lastname,
-          salary: this.salary,
-          role: {
-            name: this.roles
-          },
-          skills: [
-            { skill: '' }
-          ]
-        }
-        if (action === 'เพิ่มข้อมูล') {
-          try {
-            var dataResponse = await this.axios.post('http://localhost:9000/employee', data)
-            console.log('dataResponse ====>', dataResponse)
-            this.close()
-            this.initialize()
-          } catch (error) {
-            console.log(error.message)
-          }
-        } else {
-          try {
-            var dataResponse = await this.axios.put('http://localhost:9000/employee/' + this.idEmployee, data)
-            console.log('dataResponse ====>', dataResponse)
-            this.close()
-            this.initialize()
-          } catch (error) {
-            console.log(error.message)
-          }
+      } else {
+        try {
+          var dataResponse = await this.axios.put('http://localhost:9000/employee/' + this.idEmployee, data)
+          console.log('dataResponse ====>', dataResponse)
+          this.close()
+          this.initialize()
+        } catch (error) {
+          console.log(error.message)
         }
       }
     }
   }
-  </script>
-  
+}
+</script>
+
   <style>
-  
+
   </style>

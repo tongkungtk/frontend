@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
+import ProductView from '../views/ProductView.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/manageTable',
     name: 'manageTable',
     component: () => import(/* webpackChunkName: "about" */ '../views/TableView.vue')
+  },
+  {
+    path: '/product',
+    name: 'product',
+    component: ProductView
   }
 
 ]

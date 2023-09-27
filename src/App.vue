@@ -26,6 +26,13 @@
       </div>
 
       <v-spacer></v-spacer>
+
+      <v-btn
+       @click="gotoProduct()"
+      >
+      Connect Backend
+
+      </v-btn>
       <v-btn
        @click="gotoManage()"
       >
@@ -37,7 +44,6 @@
        เข้าสู่ระบบ
 
       </v-btn>
-
     </v-app-bar>
 
     <v-main>
@@ -60,6 +66,9 @@ export default {
     },
     gotoManage () {
       this.$router.push({ path: '/manageTable' }).catch(() => {})
+    },
+    gotoProduct () {
+      this.$router.push({ path: '/product' }).catch(() => {})
     }
   }
 }
